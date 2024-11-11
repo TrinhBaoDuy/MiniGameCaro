@@ -1,0 +1,13 @@
+{
+  "name": "MiniGameTest",
+  "uuid": "08007d8d-54bd-4df0-b2bb-add1a7b8a20b",
+  "creator": {
+    "version": "3.8.4"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4"
+  }
+}
