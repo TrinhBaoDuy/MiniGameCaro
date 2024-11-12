@@ -1,4 +1,6 @@
 import { _decorator, CCInteger, Component, Node, Sprite, SpriteFrame, Tween, tween, Vec3 } from 'cc';
+import { AudioManager } from '../Controller/AudioManager';
+import { SettingData } from './SetData';
 const { ccclass, property } = _decorator;
 
 export enum Chooser {
@@ -35,9 +37,11 @@ export class InformaionIndex extends Component {
                 this.node.getComponent(Sprite).spriteFrame = this.Null
                 break;
             case Chooser.Bot:
+                AudioManager.getInstance().clickXO(SettingData.getInstance().getSound(), false)
                 this.node.getComponent(Sprite).spriteFrame = this.Bot
                 break;
             case Chooser.Player:
+                AudioManager.getInstance().clickXO(SettingData.getInstance().getSound(), true)
                 this.node.getComponent(Sprite).spriteFrame = this.Player
                 break;
         }

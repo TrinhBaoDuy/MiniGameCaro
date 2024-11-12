@@ -1,7 +1,7 @@
 import { _decorator, Component, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
-export const Scene_NAMES = {
+export const SCENE_NAMES = {
     Home: 'home',
     Playing: 'game'
 };
@@ -13,6 +13,9 @@ export enum Level {
 }
 
 export const EVENT_NAMES = {
+    LOGIN_SUCCESFULL: "Login succesfull",
+
+
     Select: 'Select Box',
     Status: 'Status Active',
     Bot_Turn: 'Bot Turn',

@@ -8,95 +8,18 @@ const { ccclass, property } = _decorator;
 @ccclass('SettingManager')
 export class SettingManager extends Component {
     @property({ type: PopUpTween, group: " Popup" })
-    public setting: PopUpTween;
-    @property({ type: PopUpTween, group: " Popup" })
     public warning: PopUpTween;
-    @property({ type: PopUpTween, group: " Popup" })
-    public login: PopUpTween;
-    @property({ type: PopUpTween, group: " Popup" })
-    public signup: PopUpTween;
-
-    @property({ type: Node, group: " Button" })
-    public back: Node;
-    @property({ type: Node, group: " Button" })
-    public start_button: Node;
-    @property({ type: Node, group: " Button" })
-    public login_button: Node;
-
-    @property({ type: Prefab, group: " Loading" })
-    public laoding: Prefab;
 
     @property({ type: Node })
     public sound: Node;
     @property({ type: Node })
     public music: Node;
 
-    @property({ type: AudioManager })
-    public audio: AudioManager;
     private static warningWifi
 
-    start() {
-        SettingManager.warningWifi = this.warning
-        director.addPersistRootNode(this.node);
-        this.back.active = false
-    }
-
-    onclickStart() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        this.onShowLoading(2)
-        director.loadScene(Scene_NAMES.Playing)
-        this.back.active = true
-        this.start_button.active = false
-        this.login_button.active = false
-    }
-    onClickBack() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        director.loadScene(Scene_NAMES.Home)
-        this.back.active = false
-        this.start_button.active = true
-        this.login_button.active = true
-    }
-
-    async onClickSetting() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.setting.onIngrowth();
-    }
-    async onCloseSetting() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.setting.offIngrowth();
-    }
-
-
-    async onClickLogin() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.login.onIngrowth();
-    }
-    async onCloseLogin() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.login.offIngrowth();
-    }
-
-    async onClickSignup() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.login.offIngrowth();
-        await this.signup.onIngrowth();
-    }
-    async onCloseSignup() {
-        this.audio.clickButton(SettingData.getInstance().getSound())
-        await this.signup.offIngrowth();
-        await this.login.onIngrowth();
-    }
-
-
-    onShowLoading(time: number) {
-        let page = instantiate(this.laoding)
-        this.node.addChild(page)
-        this.scheduleOnce(() => {
-            if (page) {
-                console.log("xóa đi")
-                page.destroy();
-            }
-        }, time);
+    onLoad() {
+        this.sound.getComponent(Sprite).color = SettingData.getInstance().getSound() ? Color.WHITE : Color.GRAY
+        this.music.getComponent(Sprite).color = SettingData.getInstance().getMusic() ? Color.WHITE : Color.GRAY
     }
 
     onClickSound() {
@@ -108,7 +31,7 @@ export class SettingManager extends Component {
             SettingData.getInstance().setSound(true);
             this.sound.getComponent(Sprite).color = Color.WHITE
         }
-        this.audio.clickButton(SettingData.getInstance().getSound())
+        AudioManager.getInstance().clickButton(SettingData.getInstance().getSound())
 
     }
 
@@ -121,7 +44,7 @@ export class SettingManager extends Component {
             SettingData.getInstance().setMusic(true)
             this.music.getComponent(Sprite).color = Color.WHITE
         }
-        this.audio.clickButton(SettingData.getInstance().getSound())
+        AudioManager.getInstance().clickMusic(SettingData.getInstance().getMusic())
     }
 
     reLoadAdmob() {

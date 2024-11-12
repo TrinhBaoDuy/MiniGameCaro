@@ -5,10 +5,10 @@ declare global {
 }
 
 export class AdmobManager {
-    public static callByNative() {
-        // Xử lý hành động từ Java
-        // ...
-        
-    }
+  public static callByNative() {
+    // Xử lý hành động từ Java
+    // ...
+
+  }
 }
 window.AdmobManager = AdmobManager;
