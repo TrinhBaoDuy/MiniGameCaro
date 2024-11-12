@@ -3,12 +3,17 @@ import { PopUpTween } from '../View/PopUpTween';
 import { PopUpMachine } from './PopUpMachine';
 import { AudioManager } from './AudioManager';
 import { SettingData, UserData } from '../Model/SetData';
+import { MapGame } from './MapGame';
+import { Chooser, EVENT_NAMES } from '../Model/Data';
+import gameMachine from './GameMachine';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
 export class GameManager extends Component {
     @property({ type: Label })
     public user_name: Label;
+    @property({ type: MapGame })
+    public mapGame: MapGame;
 
     @property({ type: Prefab, group: "Popup" })
     public result_popup: Prefab;
@@ -18,8 +23,8 @@ export class GameManager extends Component {
     public setting_popup: Prefab;
 
     async onWin() {
-        AudioManager.getInstance().soundBravo(SettingData.getInstance().getSound())
-        await PopUpMachine.getInstance().onShowPopup(this.result_popup)
+        // AudioManager.getInstance().soundBravo(SettingData.getInstance().getSound())
+        // await PopUpMachine.getInstance().onShowPopup(this.result_popup)
     }
 
     async onWatchVideo() {
@@ -31,9 +36,19 @@ export class GameManager extends Component {
         await PopUpMachine.getInstance().onShowPopup(this.setting_popup)
     }
 
-    protected onLoad(): void {
+    protected async onLoad(): Promise<void> {
         this.user_name.string = UserData.getInstance().name
-        this.onWatchVideo()
+        await this.onWatchVideo()
+        await this.mapGame.createrMapGame()
+
+        this.mapGame.node.on(EVENT_NAMES.CHECK_WIN, this.checkWin)
+    }
+
+    checkWin() {
+        // let winner: Chooser = gameMachine.checkWinner(this.mapGame.getResultCurrent())
+        // if (winner !== Chooser.Null) {
+        this.onWin()
+        // }
     }
 }
 

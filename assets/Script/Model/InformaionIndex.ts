@@ -1,6 +1,9 @@
 import { _decorator, CCInteger, Component, Node, Sprite, SpriteFrame, Tween, tween, Vec3 } from 'cc';
 import { AudioManager } from '../Controller/AudioManager';
 import { SettingData } from './SetData';
+import gameMachine from '../Controller/GameMachine';
+import { MapGame } from '../Controller/MapGame';
+import { GameManager } from '../Controller/GameManager';
 const { ccclass, property } = _decorator;
 
 export enum Chooser {
@@ -30,7 +33,7 @@ export class InformaionIndex extends Component {
         this.columIndex = column
     }
 
-    setChooser(chooser: Chooser) {
+    async setChooser(chooser: Chooser) {
         this.value = chooser
         switch (chooser) {
             case Chooser.Null:
@@ -61,14 +64,6 @@ export class InformaionIndex extends Component {
                     })
             )
             .start();
-    }
-
-    protected onLoad(): void {
-        this.node.on(Node.EventType.TOUCH_START, () => {
-            if (this.value == Chooser.Null) {
-                this.setChooser(Chooser.Player)
-            }
-        })
     }
 }
 

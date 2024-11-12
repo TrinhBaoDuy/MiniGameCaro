@@ -14,7 +14,7 @@ export enum Level {
 
 export const EVENT_NAMES = {
     LOGIN_SUCCESFULL: "Login succesfull",
-
+    CHECK_WIN: "Check win",
 
     Select: 'Select Box',
     Status: 'Status Active',
@@ -45,6 +45,24 @@ export enum Chooser {
     Bot
 }
 
+export type MatrixCaro =
+    | {
+        col: number
+        row: number
+        value: Chooser
+    }
+    | undefined;
+
+export type GameValue =
+    | {
+        column: number
+        row: number
+        matrix: MatrixCaro[]
+    }
+    | undefined;
+
+
+export const WINNING_LENGTH = 5
 export const Bot_name = 'Thua con AI'
 export const WINSTREAK = 'WINNIG STREAK : '
 

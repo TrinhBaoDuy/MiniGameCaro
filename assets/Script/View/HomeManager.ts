@@ -22,10 +22,14 @@ export class HomeManager extends Component {
     @property({ type: Label, group: "Login Succes" })
     public label_name: Label;
 
-    onclickStart() {
+    async onclickStart() {
         AudioManager.getInstance().clickButton(SettingData.getInstance().getSound())
+        // if (UserData.getInstance().token) {
         this.onShowLoading(2)
         director.loadScene(SCENE_NAMES.Playing)
+        // } else {
+        //     await PopUpMachine.getInstance().onShowPopup(this.login_popup)
+        // }
     }
 
     async onClickSetting() {

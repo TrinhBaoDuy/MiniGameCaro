@@ -5,7 +5,7 @@ export class SettingData {
 
   private constructor() {
     this.sound = true;
-    this.music = true;
+    this.music = false;
   }
 
   public static getInstance(): SettingData {

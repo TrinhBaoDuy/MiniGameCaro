@@ -2236,6 +2236,15 @@
       "__uuid__": "0846dcb0-3329-4602-9b1e-c364fa3b3807",
       "__expectedType__": "cc.Prefab"
     },
+    "start_node": {
+      "__id__": 37
+    },
+    "login_node": {
+      "__id__": 46
+    },
+    "label_name": {
+      "__id__": 35
+    },
     "_id": "38ix3rra9GFbZXOfPCTh7k"
   },
   {
