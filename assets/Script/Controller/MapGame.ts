@@ -1,6 +1,6 @@
 import { _decorator, CCInteger, Component, instantiate, Layout, Node, Prefab, Size, UITransform, View, view } from 'cc';
 import { InformaionIndex } from '../Model/InformaionIndex';
-import { Chooser, EVENT_NAMES, GameValue, MatrixCaro } from '../Model/Data';
+import { Chooser, EVENT_NAMES, GameValue, MatrixCaro, ResultWinner } from '../Model/Data';
 import gameMachine, { GameMachine } from './GameMachine';
 const { ccclass, property } = _decorator;
 
@@ -51,27 +51,58 @@ export class MapGame extends Component {
 
     addEventSquareBox(squarebox: InformaionIndex) {
         squarebox.node.on(Node.EventType.TOUCH_START, async () => {
-            if (squarebox.value == Chooser.Null) {
-                squarebox.setChooser(Chooser.Player)
-                this.node.emit(EVENT_NAMES.CHECK_WIN)
-                let botmove = gameMachine.BotMove(this.getResultCurrent())
-                console.log("botmove", botmove)
-                if (botmove) {
-                    this.node.getComponentsInChildren(InformaionIndex).find((infor) => {
-                        if (infor.columIndex === botmove.col && infor.rowIndex === botmove.row) {
-                            infor.setChooser(botmove.value)
-                            this.node.emit(EVENT_NAMES.CHECK_WIN)
+            if (this.checkCanPlay) {
+                if (squarebox.value == Chooser.Null) {
+                    squarebox.setChooser(Chooser.Player)
+                    if (!this.checkWIN()) {
+                        let botmove = gameMachine.BotMove(this.getResultCurrent())
+                        if (botmove) {
+                            this.node.getComponentsInChildren(InformaionIndex).find((infor) => {
+                                if (infor.columIndex === botmove.col && infor.rowIndex === botmove.row) {
+                                    infor.setChooser(botmove.value)
+                                    this.node.emit(EVENT_NAMES.CHECK_WIN)
+                                }
+                            })
                         }
-                    })
+                    } else {
+                        this.node.emit(EVENT_NAMES.CHECK_WIN)
+                    }
                 }
+            } else {
+                await this.resetMapGame()
             }
         })
     }
 
-    chek() {
-        console.log(gameMachine.checkWinner(this.getResultCurrent()))
+    async resetMapGame() {
+        this.node.removeAllChildren()
+        await this.createrMapGame()
     }
 
+    checkWIN(): boolean {
+        let winner: Chooser = gameMachine.checkWinner(this.getResultCurrent()).winner
+        return winner === Chooser.Null ? false : true
+    }
+
+    checkCanPlay(): boolean {
+        this.node.getComponentsInChildren(InformaionIndex).forEach((infor) => {
+            if (infor.value === Chooser.Null)
+                return true
+        })
+        return false
+    }
+
+    getSquareBox(position: { row: number, column: number }): InformaionIndex | null {
+        return this.node.getComponentsInChildren(InformaionIndex).find((infor: InformaionIndex) => {
+            return infor.rowIndex === position.row && infor.columIndex === position.column;
+        }) || null
+    }
+
+    hightLine(result: ResultWinner) {
+        for (let index of result.positions) {
+            this.getSquareBox({ row: index.row, column: index.column }).hightline(result.winner)
+        }
+    }
 }
 
 

@@ -15,13 +15,7 @@ export enum Level {
 export const EVENT_NAMES = {
     LOGIN_SUCCESFULL: "Login succesfull",
     CHECK_WIN: "Check win",
-
-    Select: 'Select Box',
-    Status: 'Status Active',
-    Bot_Turn: 'Bot Turn',
-    Retry: 'Retry Game',
-    Home: 'Come Home Game',
-    TEST: 'TEST',
+    RESET_GAME: "Reset game",
 }
 
 export const Animation_Name = {
@@ -61,9 +55,16 @@ export type GameValue =
     }
     | undefined;
 
+export type ResultWinner =
+    | {
+        winner: Chooser
+        positions: { row: number, column: number }[]
+    }
+    | undefined;
+
+
 
 export const WINNING_LENGTH = 5
-export const Bot_name = 'Thua con AI'
 export const WINSTREAK = 'WINNIG STREAK : '
 
 

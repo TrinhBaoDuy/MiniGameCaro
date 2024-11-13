@@ -1,4 +1,4 @@
-import { _decorator, CCInteger, Component, Node, Sprite, SpriteFrame, Tween, tween, Vec3 } from 'cc';
+import { _decorator, CCInteger, Color, Component, Node, Sprite, SpriteFrame, Tween, tween, UITransform, Vec3 } from 'cc';
 import { AudioManager } from '../Controller/AudioManager';
 import { SettingData } from './SetData';
 import gameMachine from '../Controller/GameMachine';
@@ -65,6 +65,11 @@ export class InformaionIndex extends Component {
             )
             .start();
     }
+
+    hightline(winner: Chooser) {
+        this.node.getComponent(Sprite).color = winner === Chooser.Bot ? Color.RED : Color.GREEN
+    }
+
 }
 
 

@@ -1,76 +1,79 @@
 import { _decorator } from 'cc';
-import { Chooser, GameValue, MatrixCaro, WINNING_LENGTH } from '../Model/Data'; // Kiểm tra lại đường import WINNING_LENGTH
+import { Chooser, GameValue, MatrixCaro, ResultWinner, WINNING_LENGTH } from '../Model/Data'; // Kiểm tra lại đường import WINNING_LENGTH
 const { ccclass, property } = _decorator;
 
 @ccclass('GameMachine')
 export class GameMachine {
 
-    checkWinner(value: GameValue): Chooser {
+    checkWinner(value: GameValue): ResultWinner {
         if (!value || !value.matrix) {
-            return Chooser.Null;
+            return { winner: Chooser.Null, positions: [] };
         }
-
         const { column, row, matrix } = value;
-
+        const winningPositions: { row: number, column: number }[] = [];
         // Kiểm tra các hàng (chiều ngang)
         for (let r = 0; r < row; r++) {
-            for (let startCol = 0; startCol <= column - WINNING_LENGTH; startCol++) {
-                const rowValues = matrix.slice(r * column + startCol, r * column + startCol + WINNING_LENGTH).map(cell => cell?.value);
-
-                // Kiểm tra nếu tất cả các ô trong dãy có giá trị giống nhau và không phải Chooser.Null
+            for (let startRow = 0; startRow <= column - WINNING_LENGTH; startRow++) {
+                const rowValues = matrix.slice(r * column + startRow, r * column + startRow + WINNING_LENGTH).map(cell => cell?.value);
                 if (rowValues[0] !== Chooser.Null && rowValues.every(val => val === rowValues[0])) {
-                    return rowValues[0]!; // Trả về giá trị người thắng (Player hoặc Bot)
+                    for (let i = 0; i < WINNING_LENGTH; i++) {
+                        winningPositions.push({ column: r, row: startRow + i });
+                    }
+                    return { winner: rowValues[0]!, positions: winningPositions };
                 }
             }
         }
 
         // Kiểm tra các cột (chiều dọc)
         for (let c = 0; c < column; c++) {
-            for (let startRow = 0; startRow <= row - WINNING_LENGTH; startRow++) {
+            for (let startCol = 0; startCol <= row - WINNING_LENGTH; startCol++) {
                 const colValues = [];
-                for (let r = startRow; r < startRow + WINNING_LENGTH; r++) {
+                for (let r = startCol; r < startCol + WINNING_LENGTH; r++) {
                     colValues.push(matrix[r * column + c]?.value);
                 }
-
-                // Kiểm tra nếu tất cả các ô trong cột có giá trị giống nhau và không phải Chooser.Null
                 if (colValues[0] !== Chooser.Null && colValues.every(val => val === colValues[0])) {
-                    return colValues[0]!; // Trả về giá trị người thắng (Player hoặc Bot)
+                    for (let i = 0; i < WINNING_LENGTH; i++) {
+                        winningPositions.push({ column: startCol + i, row: c });
+                    }
+                    return { winner: colValues[0]!, positions: winningPositions };
                 }
             }
         }
 
         // Kiểm tra đường chéo (từ góc trên trái đến góc dưới phải)
-        for (let startRow = 0; startRow <= row - WINNING_LENGTH; startRow++) {
-            for (let startCol = 0; startCol <= column - WINNING_LENGTH; startCol++) {
+        for (let startCol = 0; startCol <= row - WINNING_LENGTH; startCol++) {
+            for (let startRow = 0; startRow <= column - WINNING_LENGTH; startRow++) {
                 const diagonal1 = [];
                 for (let i = 0; i < WINNING_LENGTH; i++) {
-                    diagonal1.push(matrix[(startRow + i) * column + (startCol + i)]?.value);
+                    diagonal1.push(matrix[(startCol + i) * column + (startRow + i)]?.value);
                 }
-
-                // Kiểm tra nếu tất cả các ô trên đường chéo có giá trị giống nhau và không phải Chooser.Null
                 if (diagonal1[0] !== Chooser.Null && diagonal1.every(val => val === diagonal1[0])) {
-                    return diagonal1[0]!; // Trả về giá trị người thắng (Player hoặc Bot)
+                    for (let i = 0; i < WINNING_LENGTH; i++) {
+                        winningPositions.push({ column: startCol + i, row: startRow + i });
+                    }
+                    return { winner: diagonal1[0]!, positions: winningPositions };
                 }
             }
         }
 
         // Kiểm tra đường chéo (từ góc trên phải đến góc dưới trái)
-        for (let startRow = 0; startRow <= row - WINNING_LENGTH; startRow++) {
-            for (let startCol = WINNING_LENGTH - 1; startCol < column; startCol++) {
+        for (let startCol = 0; startCol <= row - WINNING_LENGTH; startCol++) {
+            for (let startRow = WINNING_LENGTH - 1; startRow < column; startRow++) {
                 const diagonal2 = [];
                 for (let i = 0; i < WINNING_LENGTH; i++) {
-                    diagonal2.push(matrix[(startRow + i) * column + (startCol - i)]?.value);
+                    diagonal2.push(matrix[(startCol + i) * column + (startRow - i)]?.value);
                 }
-
-                // Kiểm tra nếu tất cả các ô trên đường chéo có giá trị giống nhau và không phải Chooser.Null
                 if (diagonal2[0] !== Chooser.Null && diagonal2.every(val => val === diagonal2[0])) {
-                    return diagonal2[0]!; // Trả về giá trị người thắng (Player hoặc Bot)
+                    for (let i = 0; i < WINNING_LENGTH; i++) {
+                        winningPositions.push({ column: startCol + i, row: startRow - i });
+                    }
+                    return { winner: diagonal2[0]!, positions: winningPositions };
                 }
             }
         }
 
-        // Nếu không có ai thắng, trả về Chooser.Null (không có người thắng)
-        return Chooser.Null;
+        // Nếu không có ai thắng, trả về Chooser.Null và danh sách vị trí rỗng
+        return { winner: Chooser.Null, positions: [] };
     }
 
     BotMove(value: GameValue): MatrixCaro | null {
