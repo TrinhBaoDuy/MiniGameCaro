@@ -3,9 +3,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass("BackgroundManager")
 export class BackgroundManager extends Component {
-    update(deltaTime: number) {
-        this.onResized();
-    }
 
     onResized() {
         const backgroundTransform = this.node.getComponent(UITransform);
@@ -20,5 +17,9 @@ export class BackgroundManager extends Component {
         this.node.children.forEach(c => {
             c.setScale(scale, scale);
         });
+    }
+
+    protected onLoad(): void {
+        this.onResized();
     }
 }
